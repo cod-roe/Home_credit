@@ -1,0 +1,113 @@
+baseline_1.2フォルダ作成しました
+保存場所: /tmp/work/src/output/baseline_1.2
+-------------------- 0 --------------------
+2024年07月03日 04:46:00
+(246008, 120) (61503, 120)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226148
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.068105 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 11367
+[LightGBM] [Info] Number of data points in the train set: 246008, number of used features: 116
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432482
+[LightGBM] [Info] Start training from score -2.432482
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.782506	valid_1's auc: 0.755903
+[200]	training's auc: 0.808961	valid_1's auc: 0.758356
+[300]	training's auc: 0.829245	valid_1's auc: 0.757774
+Early stopping, best iteration is:
+[217]	training's auc: 0.812578	valid_1's auc: 0.758595
+[auc] tr:0.8126, va:0.7586
+-------------------- 1 --------------------
+2024年07月03日 04:46:18
+(246009, 120) (61502, 120)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.069224 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 11308
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 115
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.782531	valid_1's auc: 0.756239
+[200]	training's auc: 0.808862	valid_1's auc: 0.758924
+[300]	training's auc: 0.829564	valid_1's auc: 0.758779
+Early stopping, best iteration is:
+[236]	training's auc: 0.816952	valid_1's auc: 0.759033
+[auc] tr:0.8170, va:0.7590
+-------------------- 2 --------------------
+2024年07月03日 04:46:38
+(246009, 120) (61502, 120)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.053541 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 11320
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 116
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.782101	valid_1's auc: 0.758221
+[200]	training's auc: 0.809587	valid_1's auc: 0.760104
+[300]	training's auc: 0.830474	valid_1's auc: 0.760275
+[400]	training's auc: 0.847388	valid_1's auc: 0.759875
+Early stopping, best iteration is:
+[330]	training's auc: 0.836209	valid_1's auc: 0.760378
+[auc] tr:0.8362, va:0.7604
+-------------------- 3 --------------------
+2024年07月03日 04:47:01
+(246009, 120) (61502, 120)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.053890 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 11302
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 116
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.783853	valid_1's auc: 0.754567
+[200]	training's auc: 0.811501	valid_1's auc: 0.75659
+[300]	training's auc: 0.83224	valid_1's auc: 0.756854
+Early stopping, best iteration is:
+[260]	training's auc: 0.824363	valid_1's auc: 0.757121
+[auc] tr:0.8244, va:0.7571
+-------------------- 4 --------------------
+2024年07月03日 04:47:22
+(246009, 120) (61502, 120)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.063304 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 11377
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 115
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.783715	valid_1's auc: 0.748435
+[200]	training's auc: 0.81071	valid_1's auc: 0.751348
+[300]	training's auc: 0.830488	valid_1's auc: 0.751241
+Early stopping, best iteration is:
+[202]	training's auc: 0.811333	valid_1's auc: 0.751415
+[auc] tr:0.8113, va:0.7514
+-------------------- result --------------------
+[[0.         0.81257796 0.75859528]
+ [1.         0.8169515  0.7590332 ]
+ [2.         0.83620918 0.7603778 ]
+ [3.         0.82436296 0.7571206 ]
+ [4.         0.81133335 0.75141465]]
+[cv] tr:0.8203+-0.0092,           va:0.7573+-0.0092
+[oof]0.7573
+-------------------- importance --------------------
+                   col           imp      imp_std
+38        EXT_SOURCE_3  65353.907478  1558.201212
+37        EXT_SOURCE_2  54545.388309  1251.798934
+102  ORGANIZATION_TYPE  21441.917474  1450.246190
+36        EXT_SOURCE_1  20051.934248   685.852224
+1           AMT_CREDIT   8263.228728   410.384434
+22          DAYS_BIRTH   7645.589110   689.458833
+2      AMT_GOODS_PRICE   7263.054566   405.837031
+0          AMT_ANNUITY   6762.953640   479.302045
+23       DAYS_EMPLOYED   5810.288375   552.937730
+101    OCCUPATION_TYPE   5502.675859   831.872392
