@@ -401,27 +401,29 @@ application_train.describe(exclude='number').T
 
 
 # %%
-sns.countplot(data=application_train,x='TARGET')
+# sns.countplot(data=application_train,x='TARGET')
 
 
-# %%
-display(application_train['TARGET'].value_counts())
-# %%
-display(application_train['TARGET'].value_counts()/len(application_train['TARGET']))
+# # %%
+# display(application_train['TARGET'].value_counts())
+# # %%
+# display(application_train['TARGET'].value_counts()/len(application_train['TARGET']))
 
 
-# %%
-sns.countplot(data=application_train,x='FLAG_OWN_CAR',hue='TARGET')
+# # %%
+# sns.countplot(data=application_train,x='FLAG_OWN_CAR',hue='TARGET')
 
-# %%
-pd.crosstab(application_train['FLAG_OWN_CAR'],application_train['TARGET'])
-# %%
-pd.crosstab(application_train['FLAG_OWN_CAR'],application_train['TARGET'],normalize='index')
+# # %%
+# pd.crosstab(application_train['FLAG_OWN_CAR'],application_train['TARGET'])
+# # %%
+# pd.crosstab(application_train['FLAG_OWN_CAR'],application_train['TARGET'],normalize='index')
 
+# # %%
+# sns.histplot(application_train['AMT_INCOME_TOTAL'],kde=False)
+# # %%
+# pd.crosstab(application_train['CNT_CHILDREN'],application_train['TARGET'])
+# # %%
+# pd.crosstab(application_train['CNT_CHILDREN'],application_train['TARGET'],normalize='index')
 # %%
-sns.histplot(application_train['AMT_INCOME_TOTAL'],kde=False)
-# %%
-pd.crosstab(application_train['CNT_CHILDREN'],application_train['TARGET'])
-# %%
-pd.crosstab(application_train['CNT_CHILDREN'],application_train['TARGET'],normalize='index')
+display(application_train['AMT_INCOME_TOTAL'].value_counts()/len(application_train['AMT_INCOME_TOTAL']))
 # %%
