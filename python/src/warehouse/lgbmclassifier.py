@@ -1,17 +1,24 @@
-import re
-import pickle
+#%%
+#ライブラリ読み込み
+# =================================================
+import datetime
 import gc
+import re
 import os
-from IPython.core.display import display
+import pickle
+from IPython.display import display
+import warnings
+warnings.filterwarnings('ignore')
 
 import numpy as np
 import pandas as pd
+
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 import japanize_matplotlib
 sns.set(font="IPAexGothic")
-# %matplotlib inline
+#!%matplotlib inline
 import ydata_profiling as pdp
 
 
@@ -23,8 +30,6 @@ from sklearn.metrics import roc_auc_score
 #lightGBM
 import lightgbm as lgb
 
-import warnings
-warnings.filterwarnings('ignore')
 
 # %%
 
@@ -68,6 +73,38 @@ def reduce_mem_usage(df):
     return df
                 
 
+#%%
+######################
+# Data #
+######################
+input_path = '/tmp/work/src/input/Home Credit Default Risk/' #フォルダ名適宜変更すること
+file_path = "/tmp/work/src/script/baseline_1.2.py" #ファイル名は適宜変更すること
+file_name = os.path.splitext(os.path.basename(file_path))[0]
+
+
+
+######################
+# ハイパーパラメータの設定
+######################
+params = {
+    'boosting_type': 'gbdt',
+    'objective': 'binary',
+    'metric': 'auc',
+    'learning_rate': 0.05,
+    'num_leaves': 32,
+    'n_estimators':100000,
+    'random_state': 123,
+    'importance_type': 'gain',
+}
+
+# =================================================
+# Utilities #
+# =================================================
+
+# 今の日時
+def dt_now():
+    dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+    return dt_now
 
 
 #%%
@@ -75,13 +112,14 @@ def reduce_mem_usage(df):
 #学習関数の定義
 # =================================================
 
-def train_lgb(input_x,
-              input_y,
-              input_id,
-              params,
-              list_nfold=[0,1,2,3,4],
-              n_splits=5,
-            ):
+def train_lgb(
+        input_x,
+        input_y,
+        input_id,
+        params,
+        list_nfold=[0,1,2,3,4],
+        n_splits=5,
+        ):
     
     metrics = []
     imp = pd.DataFrame()
@@ -90,13 +128,19 @@ def train_lgb(input_x,
     # cross-validation
     cv = list(StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=123).split(input_x, input_y))
 
-    #保存フォルダの移動
+
+    #output配下に現在のファイル名のフォルダを作成し、移動
     os.chdir('/tmp/work/src/output')
-    print(f'保存場所:{os.getcwd()}')
+    if not os.path.isdir(file_name):
+        os.makedirs(file_name)
+        print(f'{file_name}フォルダ作成しました')
+    os.chdir('/tmp/work/src/output/'+file_name)
+    print(f'保存場所: {os.getcwd()}')
     
     #1.学習データと検証データに分離
     for nfold in list_nfold:
         print('-'*20,nfold,'-'*20)
+        print(dt_now().strftime('%Y年%m月%d日 %H:%M:%S'))
 
         idx_tr, idx_va = cv[nfold][0], cv[nfold][1]
 
@@ -107,14 +151,15 @@ def train_lgb(input_x,
 
         #train
         model = lgb.LGBMClassifier(**params)
-        model.fit(x_tr,
-                  y_tr,
-                  eval_set = [(x_tr, y_tr), (x_va, y_va)],
-                  callbacks=[
-                    lgb.early_stopping(stopping_rounds=100, verbose=True),
-                    lgb.log_evaluation(100),
-                  ],
-                  )
+        model.fit(
+            x_tr,
+            y_tr,
+            eval_set = [(x_tr, y_tr), (x_va, y_va)],
+            callbacks=[
+                lgb.early_stopping(stopping_rounds=100, verbose=True),
+                lgb.log_evaluation(100), 
+                ]
+                )
         
         # モデルの保存
         fname_lgb = f'model_lgb_fold{nfold}.pickle'
@@ -142,7 +187,7 @@ def train_lgb(input_x,
     metrics = np.array(metrics)
     print(metrics)
     print(f'[cv] tr:{metrics[:,1].mean():.4f}+-{metrics[:,1].std():.4f}, \
-          va:{metrics[:,2].mean():.4f}+-{metrics[:,1].std():.4f}')
+        va:{metrics[:,2].mean():.4f}+-{metrics[:,1].std():.4f}')
     
     print(f'[oof]{roc_auc_score(input_y, train_oof):.4f}')
     
@@ -155,8 +200,10 @@ def train_lgb(input_x,
     #importance
     imp = imp.groupby('col')['imp'].agg(['mean', 'std']).reset_index(drop=False)
     imp.columns = ['col', 'imp', 'imp_std']
-    
-  
+
+    print('-'*20,'importance','-'*20)
+    print(imp.sort_values('imp',ascending=False)[:10])
+
     return train_oof, imp, metrics
 
 
@@ -164,15 +211,15 @@ def train_lgb(input_x,
 
 
 # %%
-# =================================================
-# 推論関数の定義
-# =================================================
+# 推論関数の定義 =================================================
 def predict_lgb(input_x,
                 input_id,
                 list_nfold=[0,1,2,3,4],
                 ):
     
-    os.chdir('/tmp/work/src/output')
+    #モデル格納場所へ移動
+    os.chdir('/tmp/work/src/output/'+file_name)
+    
     pred = np.zeros((len(input_x), len(list_nfold)))
 
     for nfold in list_nfold:

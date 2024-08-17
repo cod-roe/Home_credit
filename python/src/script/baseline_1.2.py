@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import japanize_matplotlib
 sns.set(font="IPAexGothic")
-# %matplotlib inline
+#!%matplotlib inline
 import ydata_profiling as pdp
 
 
@@ -51,14 +51,14 @@ import lightgbm as lgb
 ######################
 # serial #
 ######################
-serial_number = 001
+serial_number = 1 #スプレッドシートAの番号
 
 
 ######################
 # Data #
 ######################
-input_path = '/tmp/work/src/input/Home Credit Default Risk/'
-file_path = "/tmp/work/src/script/baseline_1.2.py"
+input_path = '/tmp/work/src/input/Home Credit Default Risk/' #フォルダ名適宜変更すること
+file_path = "/tmp/work/src/script/baseline_1.2.py" #ファイル名は適宜変更すること
 file_name = os.path.splitext(os.path.basename(file_path))[0]
 
 
@@ -147,13 +147,14 @@ def data_pre01(df):
 # %%
 #学習関数の定義
 # =================================================
-def train_lgb(input_x,
-              input_y,
-              input_id,
-              params,
-              list_nfold=[0,1,2,3,4],
-              n_splits=5,
-            ):
+def train_lgb(
+        input_x,
+        input_y,
+        input_id,
+        params,
+        list_nfold=[0,1,2,3,4],
+        n_splits=5,
+        ):
     
     metrics = []
     imp = pd.DataFrame()
@@ -185,14 +186,15 @@ def train_lgb(input_x,
 
         #train
         model = lgb.LGBMClassifier(**params)
-        model.fit(x_tr,
-                  y_tr,
-                  eval_set = [(x_tr, y_tr), (x_va, y_va)],
-                  callbacks=[
-                    lgb.early_stopping(stopping_rounds=100, verbose=True),
-                    lgb.log_evaluation(100), 
-                  ]
-                  )
+        model.fit(
+            x_tr,
+            y_tr,
+            eval_set = [(x_tr, y_tr), (x_va, y_va)],
+            callbacks=[
+                lgb.early_stopping(stopping_rounds=100, verbose=True),
+                lgb.log_evaluation(100), 
+                ]
+                )
         
         # モデルの保存
         fname_lgb = f'model_lgb_fold{nfold}.pickle'
@@ -220,7 +222,7 @@ def train_lgb(input_x,
     metrics = np.array(metrics)
     print(metrics)
     print(f'[cv] tr:{metrics[:,1].mean():.4f}+-{metrics[:,1].std():.4f}, \
-          va:{metrics[:,2].mean():.4f}+-{metrics[:,1].std():.4f}')
+        va:{metrics[:,2].mean():.4f}+-{metrics[:,1].std():.4f}')
     
     print(f'[oof]{roc_auc_score(input_y, train_oof):.4f}')
     
@@ -236,7 +238,7 @@ def train_lgb(input_x,
 
     print('-'*20,'importance','-'*20)
     print(imp.sort_values('imp',ascending=False)[:10])
-  
+
     return train_oof, imp, metrics
 
 
@@ -278,31 +280,108 @@ def predict_lgb(input_x,
 ## 分析start!
 
 #%%
-#ファイルの読み込み
+#出力表示数増やす
+# pd.set_option('display.max_rows',None)
+# pd.set_option('display.max_columns',None)
+
+#%%
+#ファイルの確認
 # =================================================
-for dirname, _, filenames in os.walk(input_path):
-    for i, datafilename in enumerate(filenames):
-        # print(os.path.join(dirname,filename))
-        print('='*20)
-        print(i,datafilename)
-   
+# for dirname, _, filenames in os.walk(input_path):
+#     for i, datafilename in enumerate(filenames):
+#         # print(os.path.join(dirname,filename))
+#         print('='*20)
+#         print(i,datafilename)
+
+#%%
+#ファイルの読み込み application_test
+# =================================================
+
+# app_test = reduce_mem_usage(pd.read_csv(input_path+"app_test.csv"))
+# print(app_test.shape)
+# display(app_test.head())
 
 
-application_train = pd.read_csv(input_path+"application_train.csv")
-print(application_train.shape)
-application_train.head()
+#%%
+#ファイルの読み込み application_train
+# =================================================
+
+app_train = reduce_mem_usage(pd.read_csv(input_path+"application_train.csv"))
+print('application_train')
+print(app_train.shape)
+app_train.head()
+
+#%%
+#ファイルの読み込み bureau
+# =================================================
+
+# bureau = reduce_mem_usage(pd.read_csv(input_path+"bureau.csv"))
+# print('bureau')
+# print(bureau.shape)
+# bureau.head()
+
+#%%
+#ファイルの読み込み bureau_balance
+# =================================================
+
+# bureau_balance = reduce_mem_usage(pd.read_csv(input_path+"bureau_balance.csv"))
+# print('bureau_balance')
+# print(bureau_balance.shape)
+# bureau_balance.head()
+
+
+#%%
+#ファイルの読み込み credit_card_balance
+# =================================================
+
+# credit_card_balance = reduce_mem_usage(pd.read_csv(input_path+"credit_card_balance.csv"))
+# print('credit_card_balance')
+# print(credit_card_balance.shape)
+# credit_card_balance.head()
+
+# #%%
+# #ファイルの読み込み installments_payments
+# # =================================================
+
+# installments_payments = reduce_mem_usage(pd.read_csv(input_path+"installments_payments.csv"))
+# print('installments_payments')
+# print(installments_payments.shape)
+# installments_payments.head()
+
+
+# #%%
+# #ファイルの読み込み POS_CASH_balance
+# # =================================================
+
+# POS_CASH_balance = reduce_mem_usage(pd.read_csv(input_path+"POS_CASH_balance.csv"))
+# print('POS_CASH_balance')
+# print(POS_CASH_balance.shape)
+# POS_CASH_balance.head()
+
+
+# #%%
+# #ファイルの読み込み previous_application
+# # =================================================
+
+# previous_application = reduce_mem_usage(pd.read_csv(input_path+"previous_application.csv"))
+# print('previous_application')
+# print(previous_application.shape)
+# previous_application.head()
+
+# %%
+# データの確認など
+# =================================================
+
+# %%
+#前処理、特徴量生成
+# =================================================
 
 
 # %%
-#メモリ削減実行
-# =================================================
-application_train = reduce_mem_usage(application_train)
-
-# %%
-#データセット
+#データセット作成
 # =================================================
 
-set_file = application_train
+set_file = app_train
 x_train = set_file.drop(columns=[target_columns,sub_index])
 y_train =set_file[target_columns]
 id_train = set_file[[sub_index]]
@@ -314,59 +393,68 @@ id_train = set_file[[sub_index]]
 #カテゴリ型に変換
 # =================================================
 x_train = data_pre01(x_train)
-# for col in x_train.columns:
-#     if x_train[col].dtype == 'O':
-#         x_train[col] = x_train[col].astype('category')
-
+x_train.info()
 
 
 #%%
-#学習処理の実行
+#モデル学習
 # =================================================
 
-train_oof, imp, metrics = train_lgb(x_train,
-                                    y_train,
-                                    id_train,
-                                    params,
-                                    list_nfold=[0,1,2,3,4],
-                                    n_splits=5,
-                                    )
+train_oof, imp, metrics = train_lgb(
+    x_train,
+    y_train,
+    params,
+    id_train,
+    list_nfold=[0,1,2,3,4],
+    n_splits=5,
+    )
 
 
 
 
 
 #%%
-#importance上位20
+#説明変数の重要度の確認上位20
 # =================================================
 imp_sort = imp.sort_values('imp',ascending=False)
 display(imp_sort[:20])
-imp_sort.to_csv(f'importance_{file_name}.csv', index=None)
+imp_sort.to_csv(f'imp_{file_name}.csv', index=None)
 
 
 #%%
+# 推論データのデータセット作成
+
 #テストファイルの読み込み
 # =================================================
-application_test = pd.read_csv(input_path+'application_test.csv')
-application_test = reduce_mem_usage(application_test)
+app_test = reduce_mem_usage(pd.read_csv(input_path+"application_test.csv"))
+print(app_test.shape)
+display(app_test.head())
 
-#データセット
-set_file = application_test
+#説明変数の変更はここで
+# =================================================
+
+
+#データセット作成
+# =================================================
+set_file = app_test
 x_test = set_file.drop(columns=[sub_index])
 id_test = set_file[[sub_index]]
 
-#カテゴリ変数をcategory型に
-x_test = data_pre01(x_test)
 
+#カテゴリ変数をcategory型に
+# =================================================
+x_test = data_pre01(x_test)
+x_test.info()
 
 
 # %%
-# 推論
+# 推論処理
 # =================================================
-test_pred = predict_lgb(x_test,
-                        id_test,
-                        list_nfold=[0,1,2,3,4],
-                        )
+test_pred = predict_lgb(
+    x_test,
+    id_test,
+    list_nfold=[0,1,2,3,4],
+    )
 # %%
 test_pred.head()
 # %%

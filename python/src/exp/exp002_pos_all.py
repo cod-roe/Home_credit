@@ -1,10 +1,10 @@
 # %% [markdown]
-## EDA データの理解、集計、可視化
+## 特徴量エンジニアリング
 #=================================================
 
 
 # %%
-# # ファイルの理解とER図 
+# #  特徴量POS_CASH_balanceファイルを使用し結合する
 
 
 #%%
@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import japanize_matplotlib
 sns.set(font="IPAexGothic")
-# %matplotlib inline
+#!%matplotlib inline
 import ydata_profiling as pdp
 
 
@@ -51,14 +51,14 @@ import lightgbm as lgb
 ######################
 # serial #
 ######################
-serial_number = 2
+serial_number = 3 #スプレッドシートAの番号
 
 
 ######################
 # Data #
 ######################
-input_path = '/tmp/work/src/input/Home Credit Default Risk/'
-file_path = "/tmp/work/src/script/eda_1.0.py"
+input_path = '/tmp/work/src/input/Home Credit Default Risk/' #フォルダ名適宜変更すること
+file_path = "/tmp/work/src/exp/exp002_pos_all.py" #ファイル名は適宜変更すること
 file_name = os.path.splitext(os.path.basename(file_path))[0]
 
 
@@ -147,13 +147,14 @@ def data_pre01(df):
 # %%
 #学習関数の定義
 # =================================================
-def train_lgb(input_x,
-              input_y,
-              input_id,
-              params,
-              list_nfold=[0,1,2,3,4],
-              n_splits=5,
-            ):
+def train_lgb(
+        input_x,
+        input_y,
+        input_id,
+        params,
+        list_nfold=[0,1,2,3,4],
+        n_splits=5,
+        ):
     
     metrics = []
     imp = pd.DataFrame()
@@ -185,14 +186,15 @@ def train_lgb(input_x,
 
         #train
         model = lgb.LGBMClassifier(**params)
-        model.fit(x_tr,
-                  y_tr,
-                  eval_set = [(x_tr, y_tr), (x_va, y_va)],
-                  callbacks=[
-                    lgb.early_stopping(stopping_rounds=100, verbose=True),
-                    lgb.log_evaluation(100), 
-                  ]
-                  )
+        model.fit(
+            x_tr,
+            y_tr,
+            eval_set = [(x_tr, y_tr), (x_va, y_va)],
+            callbacks=[
+                lgb.early_stopping(stopping_rounds=100, verbose=True),
+                lgb.log_evaluation(100), 
+                ]
+                )
         
         # モデルの保存
         fname_lgb = f'model_lgb_fold{nfold}.pickle'
@@ -220,7 +222,7 @@ def train_lgb(input_x,
     metrics = np.array(metrics)
     print(metrics)
     print(f'[cv] tr:{metrics[:,1].mean():.4f}+-{metrics[:,1].std():.4f}, \
-          va:{metrics[:,2].mean():.4f}+-{metrics[:,1].std():.4f}')
+        va:{metrics[:,2].mean():.4f}+-{metrics[:,1].std():.4f}')
     
     print(f'[oof]{roc_auc_score(input_y, train_oof):.4f}')
     
@@ -236,7 +238,7 @@ def train_lgb(input_x,
 
     print('-'*20,'importance','-'*20)
     print(imp.sort_values('imp',ascending=False)[:10])
-  
+
     return train_oof, imp, metrics
 
 
@@ -276,41 +278,38 @@ def predict_lgb(input_x,
 
 # %% [markdown]
 ## 分析start!
+
 #%%
 #出力表示数増やす
-pd.set_option('display.max_rows',None)
-pd.set_option('display.max_columns',None)
-
+# pd.set_option('display.max_rows',None)
+# pd.set_option('display.max_columns',None)
 
 #%%
 #ファイルの確認
 # =================================================
-datainput = []
-for dirname, _, filenames in os.walk(input_path):
-    for i, datafilename in enumerate(filenames):
-        # print(os.path.join(dirname,filename))
-        print('='*40)
-        print(i,datafilename)
-        datainput.append(datafilename[:-4])
-print(datainput)
-          
+# for dirname, _, filenames in os.walk(input_path):
+#     for i, datafilename in enumerate(filenames):
+#         # print(os.path.join(dirname,filename))
+#         print('='*20)
+#         print(i,datafilename)
+
 #%%
 #ファイルの読み込み application_test
 # =================================================
 
-# application_test = reduce_mem_usage(pd.read_csv(input_path+"application_test.csv"))
-# print(application_test.shape)
-# display(application_test.head())
- 
+# app_test = reduce_mem_usage(pd.read_csv(input_path+"app_test.csv"))
+# print(app_test.shape)
+# display(app_test.head())
+
 
 #%%
 #ファイルの読み込み application_train
 # =================================================
 
-application_train = reduce_mem_usage(pd.read_csv(input_path+"application_train.csv"))
+app_train = reduce_mem_usage(pd.read_csv(input_path+"application_train.csv"))
 print('application_train')
-print(application_train.shape)
-application_train.head()
+print(app_train.shape)
+app_train.head()
 
 #%%
 #ファイルの読み込み bureau
@@ -350,14 +349,14 @@ application_train.head()
 # installments_payments.head()
 
 
-# #%%
-# #ファイルの読み込み POS_CASH_balance
-# # =================================================
+#%%
+#ファイルの読み込み POS_CASH_balance
+# =================================================
 
-# POS_CASH_balance = reduce_mem_usage(pd.read_csv(input_path+"POS_CASH_balance.csv"))
-# print('POS_CASH_balance')
-# print(POS_CASH_balance.shape)
-# POS_CASH_balance.head()
+POS_CASH_balance = reduce_mem_usage(pd.read_csv(input_path+"POS_CASH_balance.csv"))
+print('POS_CASH_balance')
+print(POS_CASH_balance.shape)
+POS_CASH_balance.head()
 
 
 # #%%
@@ -370,60 +369,103 @@ application_train.head()
 # previous_application.head()
 
 # %%
-#メモリ削減実行
+# データの確認など
 # =================================================
-# application_train = reduce_mem_usage(application_train)
+
+# %%
+#前処理、特徴量生成
+# =================================================
+
+
+# %%
+#データセット作成
+# =================================================
+
+set_file = app_train
+x_train = set_file.drop(columns=[target_columns,sub_index])
+y_train =set_file[target_columns]
+id_train = set_file[[sub_index]]
 
 
 
 
 # %%
-application_train.info()
+#カテゴリ型に変換
+# =================================================
+x_train = data_pre01(x_train)
+x_train.info()
+
+
+#%%
+#モデル学習
+# =================================================
+
+train_oof, imp, metrics = train_lgb(
+    x_train,
+    y_train,
+    params,
+    id_train,
+    list_nfold=[0,1,2,3,4],
+    n_splits=5,
+    )
+
+
+
+
+
+#%%
+#説明変数の重要度の確認上位20
+# =================================================
+imp_sort = imp.sort_values('imp',ascending=False)
+display(imp_sort[:20])
+imp_sort.to_csv(f'imp_{file_name}.csv', index=None)
+
+
+#%%
+# 推論データのデータセット作成
+
+#テストファイルの読み込み
+# =================================================
+app_test = reduce_mem_usage(pd.read_csv(input_path+"application_test.csv"))
+print(app_test.shape)
+display(app_test.head())
+
+#説明変数の変更はここで
+# =================================================
+
+
+#データセット作成
+# =================================================
+set_file = app_test
+x_test = set_file.drop(columns=[sub_index])
+id_test = set_file[[sub_index]]
+
+
+#カテゴリ変数をcategory型に
+# =================================================
+x_test = data_pre01(x_test)
+x_test.info()
+
 
 # %%
-application_train.head()
+# 推論処理
+# =================================================
+test_pred = predict_lgb(
+    x_test,
+    id_test,
+    list_nfold=[0,1,2,3,4],
+    )
 # %%
-application_train.shape
-
+test_pred.head()
 # %%
-application_train.dtypes
+# submitファイルの出力
+# =================================================
+df_submit = test_pred.rename(columns={'pred':target_columns})
+print(df_submit.shape)
+display(df_submit.head())
 
-# %%
-application_train.columns
-
-# %%
-application_train.isna().sum()
-
-# %%
-application_train.describe().T
-# %%
-application_train.describe(exclude='number').T
+df_submit.to_csv(f'submission_{file_name}.csv', index=None)
 
 
-# %%
-# sns.countplot(data=application_train,x='TARGET')
+#%%
 
-
-# # %%
-# display(application_train['TARGET'].value_counts())
-# # %%
-# display(application_train['TARGET'].value_counts()/len(application_train['TARGET']))
-
-
-# # %%
-# sns.countplot(data=application_train,x='FLAG_OWN_CAR',hue='TARGET')
-
-# # %%
-# pd.crosstab(application_train['FLAG_OWN_CAR'],application_train['TARGET'])
-# # %%
-# pd.crosstab(application_train['FLAG_OWN_CAR'],application_train['TARGET'],normalize='index')
-
-# # %%
-# sns.histplot(application_train['AMT_INCOME_TOTAL'],kde=False)
-# # %%
-# pd.crosstab(application_train['CNT_CHILDREN'],application_train['TARGET'])
-# # %%
-# pd.crosstab(application_train['CNT_CHILDREN'],application_train['TARGET'],normalize='index')
-# %%
-display(application_train['AMT_INCOME_TOTAL'].value_counts()/len(application_train['AMT_INCOME_TOTAL']))
-# %%

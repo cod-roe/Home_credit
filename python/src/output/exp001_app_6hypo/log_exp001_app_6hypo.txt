@@ -1,0 +1,117 @@
+保存場所: /tmp/work/src/output/eda_1.0
+-------------------- 0 --------------------
+2024年08月17日 16:44:57
+(246008, 130) (61503, 130)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226148
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.067389 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 13680
+[LightGBM] [Info] Number of data points in the train set: 246008, number of used features: 126
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432482
+[LightGBM] [Info] Start training from score -2.432482
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.787817	valid_1's auc: 0.760032
+[200]	training's auc: 0.816788	valid_1's auc: 0.763696
+[300]	training's auc: 0.838351	valid_1's auc: 0.764008
+[400]	training's auc: 0.856611	valid_1's auc: 0.764045
+[500]	training's auc: 0.871304	valid_1's auc: 0.764075
+Early stopping, best iteration is:
+[413]	training's auc: 0.858453	valid_1's auc: 0.764148
+[auc] tr:0.8585, va:0.7641
+-------------------- 1 --------------------
+2024年08月17日 16:45:29
+(246009, 130) (61502, 130)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.068442 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 13620
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 125
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.788378	valid_1's auc: 0.763077
+[200]	training's auc: 0.816816	valid_1's auc: 0.766784
+[300]	training's auc: 0.838169	valid_1's auc: 0.767287
+[400]	training's auc: 0.856163	valid_1's auc: 0.767434
+Early stopping, best iteration is:
+[350]	training's auc: 0.847119	valid_1's auc: 0.76754
+[auc] tr:0.8471, va:0.7675
+-------------------- 2 --------------------
+2024年08月17日 16:45:59
+(246009, 130) (61502, 130)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing col-wise multi-threading, the overhead of testing was 0.163189 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+[LightGBM] [Info] Total Bins 13632
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 126
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.787655	valid_1's auc: 0.764182
+[200]	training's auc: 0.817121	valid_1's auc: 0.767566
+[300]	training's auc: 0.837872	valid_1's auc: 0.767677
+[400]	training's auc: 0.855451	valid_1's auc: 0.76783
+Early stopping, best iteration is:
+[379]	training's auc: 0.85191	valid_1's auc: 0.767915
+[auc] tr:0.8519, va:0.7679
+-------------------- 3 --------------------
+2024年08月17日 16:46:33
+(246009, 130) (61502, 130)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing col-wise multi-threading, the overhead of testing was 0.176458 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+[LightGBM] [Info] Total Bins 13615
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 126
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.787953	valid_1's auc: 0.760392
+[200]	training's auc: 0.817633	valid_1's auc: 0.764592
+[300]	training's auc: 0.839297	valid_1's auc: 0.765105
+[400]	training's auc: 0.857683	valid_1's auc: 0.765196
+[500]	training's auc: 0.87268	valid_1's auc: 0.765068
+Early stopping, best iteration is:
+[476]	training's auc: 0.869118	valid_1's auc: 0.765318
+[auc] tr:0.8691, va:0.7653
+-------------------- 4 --------------------
+2024年08月17日 16:47:13
+(246009, 130) (61502, 130)
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.078304 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 13688
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 125
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.789624	valid_1's auc: 0.755497
+[200]	training's auc: 0.818583	valid_1's auc: 0.759797
+[300]	training's auc: 0.839186	valid_1's auc: 0.76041
+[400]	training's auc: 0.856939	valid_1's auc: 0.760596
+[500]	training's auc: 0.87149	valid_1's auc: 0.760603
+Early stopping, best iteration is:
+[433]	training's auc: 0.861923	valid_1's auc: 0.760847
+[auc] tr:0.8619, va:0.7608
+-------------------- result --------------------
+[[0.         0.85845312 0.76414814]
+ [1.         0.8471186  0.76754005]
+ [2.         0.85191008 0.76791531]
+ [3.         0.86911764 0.76531788]
+ [4.         0.86192285 0.76084707]]
+[cv] tr:0.8577+-0.0077,         va:0.7652+-0.0077
+[oof]0.7651
+-------------------- importance --------------------
+                    col            imp      imp_std
+44      EXT_SOURCE_mean  114005.214702  1381.645644
+10   ANNUITY_div_CREDIT   23720.301550   805.397477
+112   ORGANIZATION_TYPE   22660.210567  1372.230448
+41         EXT_SOURCE_3   12046.854638   886.653726
+24           DAYS_BIRTH    8108.684084   578.972393
+45       EXT_SOURCE_min    7727.391587   314.203161
+39         EXT_SOURCE_1    7155.619219   472.422492
+2       AMT_GOODS_PRICE    6148.167858   364.159044
+0           AMT_ANNUITY    6091.805210   581.987900
+46       EXT_SOURCE_std    5830.390690   679.963947
