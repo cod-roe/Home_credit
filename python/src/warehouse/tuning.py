@@ -27,7 +27,7 @@ import japanize_matplotlib
 #!%matplotlib inline 
 sns.set(font='IPAexGothic') 
 # %%
-file_path = '/tmp/work/input/'
+file_path = '/tmp/work/src/input/Home Credit Default Risk/'
 
 #ファイルの読み込み
 df_train = pd.read_csv(file_path + 'train.csv')
@@ -44,7 +44,7 @@ print(x_train.shape, y_train.shape, id_train.shape)
 # %% optunaによるチューニング
 #===============================================
 
-#!pip install optuna
+
 import optuna
 # %%
 #探索しないパラメータ

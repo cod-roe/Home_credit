@@ -7,7 +7,7 @@
 # appの仮説特徴量生成
 
 
-#%%
+#%%インポート
 #ライブラリ読み込み
 # =================================================
 import datetime
@@ -44,21 +44,21 @@ import lightgbm as lgb
 
 
 
-#%%
+#%%設定
 #Config
 # =================================================
 
 ######################
 # serial #
 ######################
-serial_number = 2 #スプレッドシートAの番号
+serial_number = 5 #スプレッドシートA列の番号
 
 
 ######################
 # Data #
 ######################
 input_path = '/tmp/work/src/input/Home Credit Default Risk/' #フォルダ名適宜変更すること
-file_path = "/tmp/work/src/script/bl1.2_exp001_.py" #ファイル名は適宜変更すること
+file_path = "/tmp/work/src/script/exp004_tu01.py" #ファイル名は適宜変更すること
 file_name = os.path.splitext(os.path.basename(file_path))[0] 
 
 
@@ -71,16 +71,36 @@ sub_index = 'SK_ID_CURR'
 ######################
 # ハイパーパラメータの設定
 ######################
+#exp003_tune01
 params = {
+	'num_leaves': 32,
+	'min_child_samples': 144,
+	'min_sum_hessian_in_leaf': 0.002822464888447712,
+	'feature_fraction': 0.5134059690079296,
+	'bagging_fraction': 0.8964992342830249,
+	'lambda_l1': 3.507716474434041,
+	'lambda_l2': 7.3693406833353325,
 	'boosting_type': 'gbdt',
 	'objective': 'binary',
 	'metric': 'auc',
+	'verbosity': -1,
 	'learning_rate': 0.05,
-	'num_leaves': 32,
-	'n_estimators':100000,
-	'random_state': 123,
-	'importance_type': 'gain',
-}
+	'n_estimators': 100000,
+	'bagging_freq': 1,
+	'random_state': 123}
+
+
+#初期値
+# params = {
+# 	'boosting_type': 'gbdt',
+# 	'objective': 'binary',
+# 	'metric': 'auc',
+# 	'learning_rate': 0.05,
+# 	'num_leaves': 32,
+# 	'n_estimators':100000,
+# 	'random_state': 123,
+# 	'importance_type': 'gain',
+# }
 
 
 # =================================================
@@ -267,7 +287,7 @@ def predict_lgb(input_x,
 #%%
 #前処理の定義 カテゴリ変数をcategory型に
 # =================================================
-def data_pre01(df):
+def data_pre00(df):
 	for col in df.columns:
 		if df[col].dtype == 'O':
 			df[col] = df[col].astype('category')
@@ -278,15 +298,18 @@ def data_pre01(df):
 
 #%%
 # 特徴量生成
-def data_pre02(df):
-	#exp001
+# =================================================
+def data_pre01(df):
+	#exp001 app特徴量追加と欠損値処理
 	# 欠損値の対処（nullに変換）
 	df['DAYS_EMPLOYED'] = df['DAYS_EMPLOYED'].replace(365243,np.nan)
 	display(df['DAYS_EMPLOYED'].value_counts())
 	print(f'正の値の割合{(df["DAYS_EMPLOYED"]>0).mean():.4f}')
 	print(f'正の値の個数{(df["DAYS_EMPLOYED"]>0).sum()}')
-	
+	print('"DAYS_EMPLOYED"の正の値を0に変更しました')
+	print('='*20)
 	#特徴量生成
+	print('今まで:',df.shape)
 	# 特徴量1:総所得金額を世帯人数で割った値
 	df['INCOME_div_PERSON'] = df['AMT_INCOME_TOTAL'] / df['CNT_FAM_MEMBERS']
 	# 特徴量2:総所得金額を就労期間で割った値
@@ -303,13 +326,159 @@ def data_pre02(df):
 	df['ANNUITY_div_INCOME'] = df['AMT_ANNUITY'] / df['AMT_INCOME_TOTAL'] 
 	# 特徴量6:年金支払額を借入金で割った値
 	df['ANNUITY_div_CREDIT'] = df['AMT_ANNUITY'] / df['AMT_CREDIT'] 
-
+	print('処理後:',df.shape)
+	print('appデータに特徴量を生成しました(完了)')
+	print('='*40)
 	return df
 
+
+def data_pre02(pos,app_date):
+	# exp02:posとappデータの結合
+    #①カテゴリ変数をone-ho-encodingで数値に変換
+    pos_ohe = pd.get_dummies(pos, columns=['NAME_CONTRACT_STATUS'],dummy_na=True)
+    col_ohe = sorted(list(set(pos_ohe.columns)-set(pos.columns)))
+    print(f'①"NAME_CONTRACT_STATUS"を{len(col_ohe)}個のカラムにエンコードしました。')
+    
+
+    #②SK_IDCURRをキーに集約処理
+    pos_ohe_agg = pos_ohe.groupby('SK_ID_CURR').agg(
+        {
+            #数値の集約
+            'MONTHS_BALANCE':['mean', 'std', 'min', 'max'],
+            'CNT_INSTALMENT':['mean', 'std', 'min', 'max'],
+            'CNT_INSTALMENT_FUTURE':['mean', 'std', 'min', 'max'],
+            'SK_DPD':['mean', 'std', 'min', 'max'],
+            'SK_DPD_DEF':['mean', 'std', 'min', 'max'],
+            #カテゴリ変数をone-hot-encodingした値の集約
+            'NAME_CONTRACT_STATUS_Active':['mean'],
+            'NAME_CONTRACT_STATUS_Amortized debt':['mean'],
+            'NAME_CONTRACT_STATUS_Approved':['mean'],
+            'NAME_CONTRACT_STATUS_Canceled':['mean'],
+            'NAME_CONTRACT_STATUS_Completed':['mean'],
+            'NAME_CONTRACT_STATUS_Demand':['mean'],
+            'NAME_CONTRACT_STATUS_Returned to the store':['mean'],
+            'NAME_CONTRACT_STATUS_Signed':['mean'],
+            'NAME_CONTRACT_STATUS_XNA':['mean'],
+            'NAME_CONTRACT_STATUS_nan':['mean'],
+            #IDのユニーク数をカウント（ついでにレコード数もカウント）
+            'SK_ID_PREV':['count','nunique'],
+        }
+    )
+
+    #カラム名の付与
+    pos_ohe_agg.columns = [i + '_' + j for i, j in pos_ohe_agg.columns]
+    pos_ohe_agg = pos_ohe_agg.reset_index(drop=False)
+
+    print(f'②集約し{len(pos_ohe_agg.columns)}個のカラムを作成しました')
+    # pos_ohe_agg.head()
+
+    #③SK_ID_CURRをキーにして結合
+    print(f'結合前: [app]{app_date.shape} ,[pos]{pos_ohe_agg.shape}')
+    df = pd.merge(app_date, pos_ohe_agg, on='SK_ID_CURR', how='left')
+    print('結合後',df.shape)
+    print('③posのデータを加工後、appデータと結合しました（完了）')
+    print('='*40)
+
+    display(df.head()[:5])
+
+    return df,pos_ohe_agg
+
+#%% ファイル
+#ファイルの読み込み application_test
+# =================================================
+# app_test = reduce_mem_usage(pd.read_csv(input_path+"application_test.csv"))
+# print('application_test:app_test')
+# print(app_test.shape)
+# display(app_test.head())
+
+
+#ファイルの読み込み application_train
+# =================================================
+# app_train = reduce_mem_usage(pd.read_csv(input_path+"application_train.csv"))
+# print('application_train:app_train')
+# print(app_train.shape)
+# display(app_train.head())
+
+
+#ファイルの読み込み bureau
+# =================================================
+# bureau = reduce_mem_usage(pd.read_csv(input_path+"bureau.csv"))
+# print('bureau')
+# print(bureau.shape)
+# display(bureau.head())
+
+
+#ファイルの読み込み bureau_balance
+# =================================================
+# bureau_balance = reduce_mem_usage(pd.read_csv(input_path+"bureau_balance.csv"))
+# print('bureau_balance')
+# print(bureau_balance.shape)
+# display(bureau_balance.head())
+
+
+
+#ファイルの読み込み credit_card_balance
+# =================================================
+# credit_card_balance = reduce_mem_usage(pd.read_csv(input_path+"credit_card_balance.csv"))
+# print('credit_card_balance')
+# print(credit_card_balance.shape)
+# display(credit_card_balance.head())
+
+
+#ファイルの読み込み installments_payments
+# # =================================================
+# installments_payments = reduce_mem_usage(pd.read_csv(input_path+"installments_payments.csv"))
+# print('installments_payments')
+# print(installments_payments.shape)
+# display(installments_payments.head())
+
+
+
+#ファイルの読み込み POS_CASH_balance
+# =================================================
+# pos = reduce_mem_usage(pd.read_csv(input_path+"POS_CASH_balance.csv"))
+# print('POS_CASH_balance:pos')
+# print(pos.shape)
+# display(pos.head())
+
+
+#ファイルの読み込み previous_application
+# # =================================================
+# previous_application = reduce_mem_usage(pd.read_csv(input_path+"previous_application.csv"))
+# print('previous_application')
+# print(previous_application.shape)
+# display(previous_application.head())
 
 
 # %% [markdown]
 ## 分析start!
+#==========================================================
+
+#%% ファイルの読み込み
+# application_train
+# =================================================
+app_train = reduce_mem_usage(pd.read_csv(input_path+"application_train.csv"))
+print('application_train:app_train')
+print(app_train.shape)
+display(app_train.head())
+
+
+# application_test
+# =================================================
+app_test = reduce_mem_usage(pd.read_csv(input_path+"application_test.csv"))
+print('application_test:app_test')
+print(app_test.shape)
+display(app_test.head())
+
+
+# POS_CASH_balance
+# =================================================
+pos = reduce_mem_usage(pd.read_csv(input_path+"POS_CASH_balance.csv"))
+print('POS_CASH_balance:pos')
+print(pos.shape)
+display(pos.head())
+
+
 #%%
 #出力表示数増やす
 # pd.set_option('display.max_rows',None)
@@ -328,97 +497,36 @@ def data_pre02(df):
 # 		datainput.append(datafilename[:-4])
 # print(datainput)
         
-#%%
-#ファイルの読み込み application_test
-# =================================================
 
-# app_test = reduce_mem_usage(pd.read_csv(input_path+"app_test.csv"))
-# print(app_test.shape)
-# display(app_test.head())
+#%%[markdown]
+# これまでの処理
+#==========================================================
+#exp01:app特徴量追加と欠損値処理
+app_train = data_pre01(app_train)
 
+# exp02:posとappデータの結合
+df_train,pos_ohe_agg = data_pre02(pos,app_train)
 
-#%%
-#ファイルの読み込み application_train
-# =================================================
+#%%[markdown]
+# 今回の実験（） 
+#==========================================================
 
-app_train = reduce_mem_usage(pd.read_csv(input_path+"application_train.csv"))
-print('application_train')
-print(app_train.shape)
-app_train.head()
-
-#%%
-#ファイルの読み込み bureau
-# =================================================
-
-# bureau = reduce_mem_usage(pd.read_csv(input_path+"bureau.csv"))
-# print('bureau')
-# print(bureau.shape)
-# bureau.head()
-
-#%%
-#ファイルの読み込み bureau_balance
-# =================================================
-
-# bureau_balance = reduce_mem_usage(pd.read_csv(input_path+"bureau_balance.csv"))
-# print('bureau_balance')
-# print(bureau_balance.shape)
-# bureau_balance.head()
-
-
-#%%
-#ファイルの読み込み credit_card_balance
-# =================================================
-
-# credit_card_balance = reduce_mem_usage(pd.read_csv(input_path+"credit_card_balance.csv"))
-# print('credit_card_balance')
-# print(credit_card_balance.shape)
-# credit_card_balance.head()
-
-# #%%
-# #ファイルの読み込み installments_payments
-# # =================================================
-
-# installments_payments = reduce_mem_usage(pd.read_csv(input_path+"installments_payments.csv"))
-# print('installments_payments')
-# print(installments_payments.shape)
-# installments_payments.head()
-
-
-# #%%
-# #ファイルの読み込み POS_CASH_balance
-# # =================================================
-
-# POS_CASH_balance = reduce_mem_usage(pd.read_csv(input_path+"POS_CASH_balance.csv"))
-# print('POS_CASH_balance')
-# print(POS_CASH_balance.shape)
-# POS_CASH_balance.head()
-
-
-# #%%
-# #ファイルの読み込み previous_application
-# # =================================================
-
-# previous_application = reduce_mem_usage(pd.read_csv(input_path+"previous_application.csv"))
-# print('previous_application')
-# print(previous_application.shape)
-# previous_application.head()
-
-
-#%% 特徴量生成
-data_pre02(app_train)
+#***********実験***********
 
 # %%
 # 7-30:データセットの作成
-x_train = app_train.drop(columns=[target_columns, sub_index])
-y_train = app_train[target_columns]
-id_train = app_train[[sub_index]]
+x_train = df_train.drop(columns=[target_columns, sub_index])
+y_train = df_train[target_columns]
+id_train = df_train[[sub_index]]
+
 
 # カテゴリ型に変換
-data_pre01(x_train)
+x_train = data_pre00(x_train)
+
 # %%
 # 7-31:モデル学習
-x_train.info()
-# %%
+print(x_train.info())
+
 train_oof,imp,metrics = train_lgb(
 	x_train,
     y_train,
@@ -428,19 +536,10 @@ train_oof,imp,metrics = train_lgb(
     n_splits=5,
     )
 
-
 # %%
 # 7-32:説明変数の重要度の確認
-imp.sort_values('imp',ascending=False)[:10]
 imp.to_csv(f'imp_{file_name}.csv', index=None)
-#%%
-#ファイルの読み込み application_test
-# =================================================
-
-app_test = reduce_mem_usage(pd.read_csv(input_path+"application_test.csv"))
-print(app_test.shape)
-display(app_test.head())
-
+imp.sort_values('imp',ascending=False)[:10]
 
 
 
@@ -448,29 +547,38 @@ display(app_test.head())
 # 7-33:推論データのデータセット作成
 
 #%% 特徴量生成
-data_pre02(app_test)
+#これまでの特徴量生成
+#exp01
+app_test = data_pre01(app_test)
+
+#exp02
+df_test = pd.merge(app_test,pos_ohe_agg, on='SK_ID_CURR',how='left')
+print(df_test.shape)
+
+#今回の分：データ結合
 
 #データセット作成
-x_test = app_test.drop(columns=[sub_index])
-id_test = app_test[[sub_index]]
+x_test = df_test.drop(columns=[sub_index])
+id_test = df_test[[sub_index]]
 
 # カテゴリ型に変換
-data_pre01(x_test)
-
+x_test = data_pre00(x_test)
 x_test.info()
+
 # %% 
 # 7-34:推論処理
 test_pred = predict_lgb(
 	x_test,
-    id_test,
-    list_nfold=[0,1,2,3,4],
-    )
+	id_test,
+	list_nfold=[0,1,2,3,4],
+	)
 
 # %%
 # 7-35:提出ファイルの作成
 df_submit = test_pred.rename(columns={'pred':'TARGET'})
 print(df_submit.shape)
 display(df_submit.head())
-df_submit.to_csv('submission_FeatureEngineering.csv', index=None)
+df_submit.to_csv(f'submission_{file_name}.csv', index=None)
+
 
 #%%

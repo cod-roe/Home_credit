@@ -1,0 +1,109 @@
+exp003_tune01フォルダ作成しました
+保存場所: /tmp/work/src/output/exp003_tune01
+-------------------- 0 --------------------
+2024年08月19日 11:31:34
+(246008, 162) (61503, 162)
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.768811	valid_1's auc: 0.759595
+[200]	training's auc: 0.781863	valid_1's auc: 0.767932
+[300]	training's auc: 0.790226	valid_1's auc: 0.771313
+[400]	training's auc: 0.796976	valid_1's auc: 0.772737
+[500]	training's auc: 0.803077	valid_1's auc: 0.774047
+[600]	training's auc: 0.808396	valid_1's auc: 0.774548
+[700]	training's auc: 0.813793	valid_1's auc: 0.774774
+[800]	training's auc: 0.818575	valid_1's auc: 0.775066
+[900]	training's auc: 0.823331	valid_1's auc: 0.775437
+[1000]	training's auc: 0.827903	valid_1's auc: 0.775262
+Early stopping, best iteration is:
+[910]	training's auc: 0.823785	valid_1's auc: 0.775458
+[auc] tr:0.8238, va:0.7755
+-------------------- 1 --------------------
+2024年08月19日 11:32:52
+(246009, 162) (61502, 162)
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.767848	valid_1's auc: 0.761715
+[200]	training's auc: 0.781264	valid_1's auc: 0.771023
+[300]	training's auc: 0.789427	valid_1's auc: 0.774785
+[400]	training's auc: 0.796052	valid_1's auc: 0.776486
+[500]	training's auc: 0.802119	valid_1's auc: 0.777982
+[600]	training's auc: 0.807796	valid_1's auc: 0.778756
+[700]	training's auc: 0.812893	valid_1's auc: 0.779154
+[800]	training's auc: 0.817864	valid_1's auc: 0.779254
+[900]	training's auc: 0.822649	valid_1's auc: 0.779518
+[1000]	training's auc: 0.827008	valid_1's auc: 0.7799
+[1100]	training's auc: 0.831467	valid_1's auc: 0.779986
+[1200]	training's auc: 0.835652	valid_1's auc: 0.780136
+[1300]	training's auc: 0.83975	valid_1's auc: 0.780036
+Early stopping, best iteration is:
+[1221]	training's auc: 0.836521	valid_1's auc: 0.780222
+[auc] tr:0.8365, va:0.7802
+-------------------- 2 --------------------
+2024年08月19日 11:34:27
+(246009, 162) (61502, 162)
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.767531	valid_1's auc: 0.763227
+[200]	training's auc: 0.781075	valid_1's auc: 0.770096
+[300]	training's auc: 0.789609	valid_1's auc: 0.773147
+[400]	training's auc: 0.79648	valid_1's auc: 0.774457
+[500]	training's auc: 0.802781	valid_1's auc: 0.77548
+[600]	training's auc: 0.808458	valid_1's auc: 0.775971
+[700]	training's auc: 0.813614	valid_1's auc: 0.776385
+[800]	training's auc: 0.818404	valid_1's auc: 0.776795
+[900]	training's auc: 0.823274	valid_1's auc: 0.776933
+[1000]	training's auc: 0.827911	valid_1's auc: 0.776774
+Early stopping, best iteration is:
+[920]	training's auc: 0.824191	valid_1's auc: 0.776953
+[auc] tr:0.8242, va:0.7770
+-------------------- 3 --------------------
+2024年08月19日 11:35:41
+(246009, 162) (61502, 162)
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.767593	valid_1's auc: 0.759716
+[200]	training's auc: 0.780973	valid_1's auc: 0.768327
+[300]	training's auc: 0.789347	valid_1's auc: 0.771759
+[400]	training's auc: 0.79646	valid_1's auc: 0.77367
+[500]	training's auc: 0.802754	valid_1's auc: 0.774798
+[600]	training's auc: 0.808431	valid_1's auc: 0.775177
+[700]	training's auc: 0.813892	valid_1's auc: 0.775436
+[800]	training's auc: 0.818841	valid_1's auc: 0.775672
+[900]	training's auc: 0.823636	valid_1's auc: 0.775678
+Early stopping, best iteration is:
+[859]	training's auc: 0.821788	valid_1's auc: 0.7758
+[auc] tr:0.8218, va:0.7758
+-------------------- 4 --------------------
+2024年08月19日 11:36:40
+(246009, 162) (61502, 162)
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.769684	valid_1's auc: 0.755959
+[200]	training's auc: 0.782686	valid_1's auc: 0.76411
+[300]	training's auc: 0.791187	valid_1's auc: 0.767265
+[400]	training's auc: 0.798171	valid_1's auc: 0.768851
+[500]	training's auc: 0.804135	valid_1's auc: 0.769528
+[600]	training's auc: 0.809762	valid_1's auc: 0.770079
+[700]	training's auc: 0.814935	valid_1's auc: 0.770553
+[800]	training's auc: 0.819847	valid_1's auc: 0.770637
+[900]	training's auc: 0.824668	valid_1's auc: 0.770713
+[1000]	training's auc: 0.829076	valid_1's auc: 0.770815
+Early stopping, best iteration is:
+[957]	training's auc: 0.827119	valid_1's auc: 0.770916
+[auc] tr:0.8271, va:0.7709
+-------------------- result --------------------
+[[0.         0.8237851  0.77545773]
+ [1.         0.83652114 0.78022179]
+ [2.         0.82419063 0.77695289]
+ [3.         0.82178799 0.77579984]
+ [4.         0.82711895 0.77091612]]
+[cv] tr:0.8267+-0.0052,         va:0.7759+-0.0052
+[oof]0.7759
+-------------------- importance --------------------
+                    col     imp     imp_std
+134   ORGANIZATION_TYPE  1101.6  135.038143
+10   ANNUITY_div_CREDIT   565.4   40.116082
+133     OCCUPATION_TYPE   300.4   54.829736
+32           DAYS_BIRTH   277.8   38.382288
+49         EXT_SOURCE_3   276.6   30.146310
+52      EXT_SOURCE_mean   215.4   19.138965
+2       AMT_GOODS_PRICE   211.2   28.577964
+47         EXT_SOURCE_1   210.8   30.833423
+35      DAYS_ID_PUBLISH   209.8   37.352376
+0           AMT_ANNUITY   188.8   23.972901

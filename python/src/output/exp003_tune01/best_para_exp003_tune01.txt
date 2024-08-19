@@ -1,0 +1,62 @@
+vscode_ver
+
+acc(best)=0.7755
+{'num_leaves': 11,
+ 'min_child_samples': 145,
+ 'min_sum_hessian_in_leaf': 1.1026835560111902e-05,
+ 'feature_fraction': 0.5153192427883957,
+ 'bagging_fraction': 0.8856146614523145,
+ 'lambda_l1': 3.3717643347574793,
+ 'lambda_l2': 0.012986963131711984}
+
+=======================================
+
+{'num_leaves': 11,
+ 'min_child_samples': 145,
+ 'min_sum_hessian_in_leaf': 1.1026835560111902e-05,
+ 'feature_fraction': 0.5153192427883957,
+ 'bagging_fraction': 0.8856146614523145,
+ 'lambda_l1': 3.3717643347574793,
+ 'lambda_l2': 0.012986963131711984,
+ 'boosting_type': 'gbdt',
+ 'objective': 'binary',
+ 'metric': 'auc',
+ 'verbosity': -1,
+ 'learning_rate': 0.05,
+ 'n_estimators': 100000,
+ 'bagging_freq': 1,
+ 'random_state': 123}
+
+=======================================
+=======================================
+=======================================
+colab_ver
+
+acc(best)=0.7755
+{'num_leaves': 32,
+ 'min_child_samples': 144,
+ 'min_sum_hessian_in_leaf': 0.002822464888447712,
+ 'feature_fraction': 0.5134059690079296,
+ 'bagging_fraction': 0.8964992342830249,
+ 'lambda_l1': 3.507716474434041,
+ 'lambda_l2': 7.3693406833353325}
+
+
+=======================================
+{'num_leaves': 32,
+ 'min_child_samples': 144,
+ 'min_sum_hessian_in_leaf': 0.002822464888447712,
+ 'feature_fraction': 0.5134059690079296,
+ 'bagging_fraction': 0.8964992342830249,
+ 'lambda_l1': 3.507716474434041,
+ 'lambda_l2': 7.3693406833353325,
+ 'boosting_type': 'gbdt',
+ 'objective': 'binary',
+ 'metric': 'auc',
+ 'verbosity': -1,
+ 'learning_rate': 0.05,
+ 'n_estimators': 100000,
+ 'bagging_freq': 1,
+ 'random_state': 123}
+
+

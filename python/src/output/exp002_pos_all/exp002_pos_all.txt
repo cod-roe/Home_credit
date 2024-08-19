@@ -1,0 +1,127 @@
+exp002_pos_allフォルダ作成しました
+保存場所: /tmp/work/src/output/exp002_pos_all
+-------------------- 0 --------------------
+2024年08月18日 15:28:38
+(246008, 162) (61503, 162)
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226148
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.098754 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 18345
+[LightGBM] [Info] Number of data points in the train set: 246008, number of used features: 158
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432482
+[LightGBM] [Info] Start training from score -2.432482
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.794833	valid_1's auc: 0.7663
+[200]	training's auc: 0.825601	valid_1's auc: 0.771197
+[300]	training's auc: 0.848487	valid_1's auc: 0.771543
+[400]	training's auc: 0.866733	valid_1's auc: 0.771473
+Early stopping, best iteration is:
+[384]	training's auc: 0.864221	valid_1's auc: 0.771731
+[auc] tr:0.8642, va:0.7717
+-------------------- 1 --------------------
+2024年08月18日 15:29:16
+(246009, 162) (61502, 162)
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.090713 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 18305
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 157
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.794625	valid_1's auc: 0.769539
+[200]	training's auc: 0.824647	valid_1's auc: 0.774952
+[300]	training's auc: 0.846596	valid_1's auc: 0.775827
+[400]	training's auc: 0.864389	valid_1's auc: 0.775729
+Early stopping, best iteration is:
+[302]	training's auc: 0.847008	valid_1's auc: 0.775877
+[auc] tr:0.8470, va:0.7759
+-------------------- 2 --------------------
+2024年08月18日 15:29:48
+(246009, 162) (61502, 162)
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.089745 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 18303
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 158
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.794858	valid_1's auc: 0.769554
+[200]	training's auc: 0.824927	valid_1's auc: 0.772929
+[300]	training's auc: 0.847469	valid_1's auc: 0.773455
+[400]	training's auc: 0.865346	valid_1's auc: 0.773704
+[500]	training's auc: 0.880228	valid_1's auc: 0.773947
+Early stopping, best iteration is:
+[474]	training's auc: 0.876836	valid_1's auc: 0.774072
+[auc] tr:0.8768, va:0.7741
+-------------------- 3 --------------------
+2024年08月18日 15:30:33
+(246009, 162) (61502, 162)
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing col-wise multi-threading, the overhead of testing was 0.194020 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+[LightGBM] [Info] Total Bins 18276
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 158
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.794958	valid_1's auc: 0.765776
+[200]	training's auc: 0.825815	valid_1's auc: 0.770211
+[300]	training's auc: 0.848161	valid_1's auc: 0.771052
+[400]	training's auc: 0.865657	valid_1's auc: 0.771542
+[500]	training's auc: 0.880606	valid_1's auc: 0.771321
+Early stopping, best iteration is:
+[418]	training's auc: 0.868555	valid_1's auc: 0.771611
+[auc] tr:0.8686, va:0.7716
+-------------------- 4 --------------------
+2024年08月18日 15:31:16
+(246009, 162) (61502, 162)
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] Number of positive: 19860, number of negative: 226149
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.100022 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 18349
+[LightGBM] [Info] Number of data points in the train set: 246009, number of used features: 157
+[LightGBM] [Warning] Found whitespace in feature_names, replace with underlines
+[LightGBM] [Info] [binary:BoostFromScore]: pavg=0.080729 -> initscore=-2.432486
+[LightGBM] [Info] Start training from score -2.432486
+Training until validation scores don't improve for 100 rounds
+[100]	training's auc: 0.796048	valid_1's auc: 0.760841
+[200]	training's auc: 0.825915	valid_1's auc: 0.766055
+[300]	training's auc: 0.848008	valid_1's auc: 0.766434
+Early stopping, best iteration is:
+[260]	training's auc: 0.839938	valid_1's auc: 0.766694
+[auc] tr:0.8399, va:0.7667
+-------------------- result --------------------
+[[0.         0.86422096 0.77173096]
+ [1.         0.8470079  0.77587667]
+ [2.         0.87683635 0.77407215]
+ [3.         0.86855508 0.77161142]
+ [4.         0.83993819 0.76669414]]
+[cv] tr:0.8593+-0.0137,         va:0.7720+-0.0137
+[oof]0.7720
+-------------------- importance --------------------
+                            col            imp      imp_std
+52              EXT_SOURCE_mean  112560.351519   859.527834
+134           ORGANIZATION_TYPE   21677.798461  2271.103498
+10           ANNUITY_div_CREDIT   18437.135658   669.439604
+49                 EXT_SOURCE_3   10476.614588   911.072944
+53               EXT_SOURCE_min    7080.913485   760.231325
+32                   DAYS_BIRTH    6742.913688  1121.868442
+47                 EXT_SOURCE_1    6468.109529   796.992071
+21   CNT_INSTALMENT_FUTURE_mean    6197.136422   784.949501
+108          MONTHS_BALANCE_std    5543.389011   596.048165
+0                   AMT_ANNUITY    5530.287953   555.477032

@@ -1,11 +1,10 @@
 # %% [markdown]
-## 特徴量エンジニアリング
+# EDA データの理解、集計、可視化
 #=================================================
 
 
 # %%
-# #  特徴量POS_CASH_balanceファイルを使用し結合する
-
+# appの仮説特徴量生成
 
 
 #%%インポート
@@ -52,15 +51,15 @@ import lightgbm as lgb
 ######################
 # serial #
 ######################
-serial_number = 3 #スプレッドシートAの番号
+serial_number = 4 #スプレッドシートA列の番号
 
 
 ######################
 # Data #
 ######################
 input_path = '/tmp/work/src/input/Home Credit Default Risk/' #フォルダ名適宜変更すること
-file_path = "/tmp/work/src/exp/exp002_pos_all.py" #ファイル名は適宜変更すること
-file_name = os.path.splitext(os.path.basename(file_path))[0]
+file_path = "/tmp/work/src/script/bl1.2_exp002_tu01.py" #ファイル名は適宜変更すること
+file_name = os.path.splitext(os.path.basename(file_path))[0] 
 
 
 ######################
@@ -72,16 +71,36 @@ sub_index = 'SK_ID_CURR'
 ######################
 # ハイパーパラメータの設定
 ######################
+#exp003_tune01
 params = {
+	'num_leaves': 32,
+	'min_child_samples': 144,
+	'min_sum_hessian_in_leaf': 0.002822464888447712,
+	'feature_fraction': 0.5134059690079296,
+	'bagging_fraction': 0.8964992342830249,
+	'lambda_l1': 3.507716474434041,
+	'lambda_l2': 7.3693406833353325,
 	'boosting_type': 'gbdt',
 	'objective': 'binary',
 	'metric': 'auc',
+	'verbosity': -1,
 	'learning_rate': 0.05,
-	'num_leaves': 32,
-	'n_estimators':100000,
-	'random_state': 123,
-	'importance_type': 'gain',
-}
+	'n_estimators': 100000,
+	'bagging_freq': 1,
+	'random_state': 123}
+
+
+#初期値
+# params = {
+# 	'boosting_type': 'gbdt',
+# 	'objective': 'binary',
+# 	'metric': 'auc',
+# 	'learning_rate': 0.05,
+# 	'num_leaves': 32,
+# 	'n_estimators':100000,
+# 	'random_state': 123,
+# 	'importance_type': 'gain',
+# }
 
 
 # =================================================
@@ -281,13 +300,14 @@ def data_pre00(df):
 # 特徴量生成
 # =================================================
 def data_pre01(df):
-	#exp001
+	#exp001 app特徴量追加と欠損値処理
 	# 欠損値の対処（nullに変換）
 	df['DAYS_EMPLOYED'] = df['DAYS_EMPLOYED'].replace(365243,np.nan)
 	display(df['DAYS_EMPLOYED'].value_counts())
 	print(f'正の値の割合{(df["DAYS_EMPLOYED"]>0).mean():.4f}')
 	print(f'正の値の個数{(df["DAYS_EMPLOYED"]>0).sum()}')
-	
+	print('"DAYS_EMPLOYED"の正の値を0に変更しました')
+	print('='*20)
 	#特徴量生成
 	print('今まで:',df.shape)
 	# 特徴量1:総所得金額を世帯人数で割った値
@@ -307,7 +327,61 @@ def data_pre01(df):
 	# 特徴量6:年金支払額を借入金で割った値
 	df['ANNUITY_div_CREDIT'] = df['AMT_ANNUITY'] / df['AMT_CREDIT'] 
 	print('処理後:',df.shape)
+	print('appデータに特徴量を生成しました(完了)')
+	print('='*40)
 	return df
+
+
+def data_pre02(pos,app_date):
+	# exp02:posとappデータの結合
+    #①カテゴリ変数をone-ho-encodingで数値に変換
+    pos_ohe = pd.get_dummies(pos, columns=['NAME_CONTRACT_STATUS'],dummy_na=True)
+    col_ohe = sorted(list(set(pos_ohe.columns)-set(pos.columns)))
+    print(f'①"NAME_CONTRACT_STATUS"を{len(col_ohe)}個のカラムにエンコードしました。')
+    
+
+    #②SK_IDCURRをキーに集約処理
+    pos_ohe_agg = pos_ohe.groupby('SK_ID_CURR').agg(
+        {
+            #数値の集約
+            'MONTHS_BALANCE':['mean', 'std', 'min', 'max'],
+            'CNT_INSTALMENT':['mean', 'std', 'min', 'max'],
+            'CNT_INSTALMENT_FUTURE':['mean', 'std', 'min', 'max'],
+            'SK_DPD':['mean', 'std', 'min', 'max'],
+            'SK_DPD_DEF':['mean', 'std', 'min', 'max'],
+            #カテゴリ変数をone-hot-encodingした値の集約
+            'NAME_CONTRACT_STATUS_Active':['mean'],
+            'NAME_CONTRACT_STATUS_Amortized debt':['mean'],
+            'NAME_CONTRACT_STATUS_Approved':['mean'],
+            'NAME_CONTRACT_STATUS_Canceled':['mean'],
+            'NAME_CONTRACT_STATUS_Completed':['mean'],
+            'NAME_CONTRACT_STATUS_Demand':['mean'],
+            'NAME_CONTRACT_STATUS_Returned to the store':['mean'],
+            'NAME_CONTRACT_STATUS_Signed':['mean'],
+            'NAME_CONTRACT_STATUS_XNA':['mean'],
+            'NAME_CONTRACT_STATUS_nan':['mean'],
+            #IDのユニーク数をカウント（ついでにレコード数もカウント）
+            'SK_ID_PREV':['count','nunique'],
+        }
+    )
+
+    #カラム名の付与
+    pos_ohe_agg.columns = [i + '_' + j for i, j in pos_ohe_agg.columns]
+    pos_ohe_agg = pos_ohe_agg.reset_index(drop=False)
+
+    print(f'②集約し{len(pos_ohe_agg.columns)}個のカラムを作成しました')
+    # pos_ohe_agg.head()
+
+    #③SK_ID_CURRをキーにして結合
+    print(f'結合前: [app]{app_date.shape} ,[pos]{pos_ohe_agg.shape}')
+    df = pd.merge(app_date, pos_ohe_agg, on='SK_ID_CURR', how='left')
+    print('結合後',df.shape)
+    print('③posのデータを加工後、appデータと結合しました（完了）')
+    print('='*40)
+
+    display(df.head()[:5])
+
+    return df,pos_ohe_agg
 
 #%% ファイル
 #ファイルの読み込み application_test
@@ -375,16 +449,13 @@ def data_pre01(df):
 # print(previous_application.shape)
 # display(previous_application.head())
 
+
 # %% [markdown]
 ## 分析start!
 #==========================================================
 
-
-
-
-
-#%%
-#ファイルの読み込み application_train
+#%% ファイルの読み込み
+# application_train
 # =================================================
 app_train = reduce_mem_usage(pd.read_csv(input_path+"application_train.csv"))
 print('application_train:app_train')
@@ -392,7 +463,7 @@ print(app_train.shape)
 display(app_train.head())
 
 
-#ファイルの読み込み application_test
+# application_test
 # =================================================
 app_test = reduce_mem_usage(pd.read_csv(input_path+"application_test.csv"))
 print('application_test:app_test')
@@ -400,7 +471,7 @@ print(app_test.shape)
 display(app_test.head())
 
 
-#ファイルの読み込み POS_CASH_balance
+# POS_CASH_balance
 # =================================================
 pos = reduce_mem_usage(pd.read_csv(input_path+"POS_CASH_balance.csv"))
 print('POS_CASH_balance:pos')
@@ -408,77 +479,52 @@ print(pos.shape)
 display(pos.head())
 
 
-#%%これまでの処理
-#==========================================================
+#%%
+#出力表示数増やす
+# pd.set_option('display.max_rows',None)
+# pd.set_option('display.max_columns',None)
 
-#%% 特徴量生成
-data_pre01(app_train)
 
+#%%
+#ファイルの確認
+# =================================================
+# datainput = []
+# for dirname, _, filenames in os.walk(input_path):
+# 	for i, datafilename in enumerate(filenames):
+# 		# print(os.path.join(dirname,filename))
+# 		print('='*40)
+# 		print(i,datafilename)
+# 		datainput.append(datafilename[:-4])
+# print(datainput)
+        
 
 #%%[markdown]
-# 今回の実験（pos結合） 
+# これまでの処理
+#==========================================================
+#exp01:app特徴量追加と欠損値処理
+app_train = data_pre01(app_train)
+
+# exp02:posとappデータの結合
+df_train,pos_ohe_agg = data_pre02(pos,app_train)
+
+#%%[markdown]
+# 今回の実験（） 
 #==========================================================
 
-#%%データの結合
-# 7-37:①カテゴリ変数をone-ho-encodingで数値に変換
-pos_ohe = pd.get_dummies(pos, columns=['NAME_CONTRACT_STATUS'],dummy_na=True)
-col_ohe = sorted(list(set(pos_ohe.columns)-set(pos.columns)))
-print(len(col_ohe))
-col_ohe
-
-#%%7-38:②SK_IDCURRをキーに集約処理
-pos_ohe_agg = pos_ohe.groupby('SK_ID_CURR').agg(
-	{
-		#数値の集約
-		'MONTHS_BALANCE':['mean', 'std', 'min', 'max'],
-		'CNT_INSTALMENT':['mean', 'std', 'min', 'max'],
-		'CNT_INSTALMENT_FUTURE':['mean', 'std', 'min', 'max'],
-		'SK_DPD':['mean', 'std', 'min', 'max'],
-		'SK_DPD_DEF':['mean', 'std', 'min', 'max'],
-		#カテゴリ変数をone-hot-encodingした値の集約
-		'NAME_CONTRACT_STATUS_Active':['mean'],
-		'NAME_CONTRACT_STATUS_Amortized debt':['mean'],
-		'NAME_CONTRACT_STATUS_Approved':['mean'],
-		'NAME_CONTRACT_STATUS_Canceled':['mean'],
-		'NAME_CONTRACT_STATUS_Completed':['mean'],
-		'NAME_CONTRACT_STATUS_Demand':['mean'],
-		'NAME_CONTRACT_STATUS_Returned to the store':['mean'],
-		'NAME_CONTRACT_STATUS_Signed':['mean'],
-		'NAME_CONTRACT_STATUS_XNA':['mean'],
-		'NAME_CONTRACT_STATUS_nan':['mean'],
-		#IDのユニーク数をカウント（ついでにレコード数もカウント）
-		'SK_ID_PREV':['count','nunique'],
-	}
-)
-
-#カラム名の付与
-pos_ohe_agg.columns = [i + '_' + j for i, j in pos_ohe_agg.columns]
-pos_ohe_agg = pos_ohe_agg.reset_index(drop=False)
-
-print(pos_ohe_agg.shape)
-pos_ohe_agg.head()
-
+#***********実験***********
 
 # %%
-# 7-39:③SK_ID_CURRをキーにして結合
-print('結合前:',app_train.shape,pos_ohe_agg.shape)
-df_train = pd.merge(app_train, pos_ohe_agg, on='SK_ID_CURR', how='left')
-print('結合後',df_train.shape)
-df_train.head()
-
-
-# %%
-# 7-40:データセットの作成
+# 7-30:データセットの作成
 x_train = df_train.drop(columns=[target_columns, sub_index])
 y_train = df_train[target_columns]
 id_train = df_train[[sub_index]]
 
-# カテゴリ型に変換
-data_pre00(x_train)
 
+# カテゴリ型に変換
+x_train = data_pre00(x_train)
 
 # %%
-# 7-41:モデル学習
+# 7-31:モデル学習
 print(x_train.info())
 
 train_oof,imp,metrics = train_lgb(
@@ -489,45 +535,50 @@ train_oof,imp,metrics = train_lgb(
     list_nfold=[0,1,2,3,4],
     n_splits=5,
     )
+
 # %%
-# 7-42:説明変数の重要度の確認
+# 7-32:説明変数の重要度の確認
 imp.to_csv(f'imp_{file_name}.csv', index=None)
 imp.sort_values('imp',ascending=False)[:10]
 
 
+
 # %%
-# 7-43:推論データのデータセット作成
+# 7-33:推論データのデータセット作成
 
+#%% 特徴量生成
 #これまでの特徴量生成
-data_pre01(app_test)
+#exp01
+app_test = data_pre01(app_test)
 
-#今回の分：データ結合
+#exp02
 df_test = pd.merge(app_test,pos_ohe_agg, on='SK_ID_CURR',how='left')
 print(df_test.shape)
+
+#今回の分：データ結合
 
 #データセット作成
 x_test = df_test.drop(columns=[sub_index])
 id_test = df_test[[sub_index]]
 
 # カテゴリ型に変換
-data_pre00(x_test)
-
+x_test = data_pre00(x_test)
 x_test.info()
 
-# %%
-# 7-44:推論処理
+# %% 
+# 7-34:推論処理
 test_pred = predict_lgb(
 	x_test,
-    id_test,
-    list_nfold=[0,1,2,3,4],
-    )
+	id_test,
+	list_nfold=[0,1,2,3,4],
+	)
 
 # %%
-# 7-45:提出ファイルの作成
+# 7-35:提出ファイルの作成
 df_submit = test_pred.rename(columns={'pred':'TARGET'})
 print(df_submit.shape)
 display(df_submit.head())
 df_submit.to_csv(f'submission_{file_name}.csv', index=None)
 
 
-# %%
+#%%
