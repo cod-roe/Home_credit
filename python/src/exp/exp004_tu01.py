@@ -109,7 +109,7 @@ params = {
 
 # 今の日時
 def dt_now():
-	dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+	dt_now = datetime.datetime.now()
 	return dt_now
 
 

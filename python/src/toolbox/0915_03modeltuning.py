@@ -1,16 +1,35 @@
+# %% [markdown]
+## モデルチューニング！
+#=================================================
+# optuna使ったハイパーパラメータの設定
+# 他のモデル：ロジスティック、SVM、ニューラルネットワーク
+# アンサンブル：単純平均、重み付き、lasso使ったスタッキング
+
 # %% ライブラリ読み込み
+import datetime as dt
+import gc
+import glob
+import json
+import re
+import os
+import sys
+import pickle
+from IPython.display import display
+import warnings
+warnings.filterwarnings('ignore')
+import zipfile
+
 import numpy as np
 import pandas as pd
-import os
-import pickle
-import gc
-from IPython.display import display
-#分布確認
-import ydata_profiling as php
+
 
 #可視化
 import matplotlib.pyplot as plt
 import seaborn as sns
+import japanize_matplotlib
+sns.set(font="IPAexGothic")
+#!%matplotlib inline
+
 
 #前処理
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder, OneHotEncoder
@@ -20,12 +39,10 @@ from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 from sklearn.metrics import accuracy_score, roc_auc_score, confusion_matrix
 import lightgbm as lgb
 
-import warnings
-warnings.filterwarnings('ignore')
 
-import japanize_matplotlib 
-#!%matplotlib inline 
-sns.set(font='IPAexGothic') 
+#分布確認
+# import ydata_profiling as php
+
 # %%
 file_path = '/tmp/work/src/input/Home Credit Default Risk/'
 
@@ -41,9 +58,10 @@ df_train[['Survived']],\
 df_train[['PassengerId']]
 
 print(x_train.shape, y_train.shape, id_train.shape)
-# %% optunaによるチューニング
+# %% 
 #===============================================
-
+# optunaによるチューニング
+#===============================================
 
 import optuna
 # %%
@@ -113,7 +131,13 @@ params_beat.update(params_base)
 display(params_beat)
 
 
-# %%他のモデル
+
+
+# %%
+#=============================================== 
+# 他のモデル
+#===============================================
+
 #ロジスティック回帰
 
 #ファイルの読み込み
@@ -187,6 +211,7 @@ print(y_va_pred[:5])
 
 y_va_pred_proba = model_svm.predict_proba(x_va)
 print(y_va_pred_proba[:5, :])
+
 
 
 # %% =========ニューラルネットワーク================
@@ -425,7 +450,14 @@ model.fit(x=[x_num_tr, x_cat_tr],
 y_va_pred = model.predict([x_num_va, x_cat_va], batch_size=8, verbose=1)
 print(f'accuracy:{accuracy_score(y_va, np.where(y_va_pred > 0.5 ,1, 0)):4f}')
 
-# %% アンサンブル
+
+
+
+# %%
+#=============================================== 
+# アンサンブル
+#===============================================
+
 #単純平均
 np.random.seed(123)
 df = pd.DataFrame({

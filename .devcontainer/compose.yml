@@ -1,6 +1,6 @@
 services:
   python:
-    image: ex21/python:1.0
+    image: ex02/python:3.11
     build: ./python
     container_name: 'Home-Credit-Default-Risk'
     stdin_open: true

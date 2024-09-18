@@ -1,5 +1,10 @@
+# %% [markdown]
+## EDA,特徴量エンジニア！
+#=================================================
+#基本、前処理、簡単な特徴量作成、テキストデータ
+
 # %% ライブラリ読み込み
-import datetime
+import datetime as dt
 import numpy as np
 import pandas as pd
 import os
@@ -68,8 +73,13 @@ print(file_name)
 
 # %%今の日付 docker image 作り直したらいらんかも
 #========================================
+def dt_now():
+    dt_now = dt.datetime.now()
+    return dt_now
 
-dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+#時間がずれていた時
+dt_now = dt.datetime.now(dt.timezone(dt.timedelta(hours=9)))
+#表示：2024年09月15日 00:51:42
 print(dt_now.strftime('%Y年%m月%d日 %H:%M:%S'))
 
 
@@ -101,7 +111,9 @@ php.ProfileReport(df)
 profile_report = php.ProfileReport(df)
 profile_report.to_file('report.html')
 
-#%%グラフ
+#%%
+# グラフ
+# =================================================
 
 #棒グラフ（カテゴリ型）
 sns.countplot(data=df,x='Sex', hue='Sex')
@@ -111,7 +123,9 @@ sns.histplot(data=df,x='Age',bins=8)
 #関係性->散布図、相関係数、ヒートマップ
 #割合-> 帯グラフ、円グラフ
 
-# %% 欠損値
+# %% 
+# =================================================
+# 欠損値
 # =================================================
 df.isna().sum()
 #欠損値0埋め
@@ -132,6 +146,7 @@ df.loc[df['Cabin'].isna(), ['Cabin', 'Cabin_fillna_mode']]
 
 
 # %% 
+# =================================================
 # 外れ値
 # =================================================
 #見つけ方
@@ -148,7 +163,10 @@ df.loc[df['Age']< 0, 'Age'] = np.nan
 
 
 # %%
+# =================================================
 # 標準化
+# =================================================
+
 value_mean = df['Fare'].mean()
 value_std = df['Fare'].std(ddof=0)
 # value_std = df_train['Fare'].std() #標本の標準偏差
@@ -159,6 +177,8 @@ df['Fare_standard'] = (df['Fare'] - value_mean) / value_std
 df[['Fare','Fare_standard']].head()
 
 #サイキットラーン使う場合
+# =================================================
+
 std = StandardScaler()
 std.fit(df[['Fare']])
 print('mean:', std.mean_[0], ', std:',np.sqrt(std.var_[0]))
@@ -167,7 +187,10 @@ df['Fare_standard'] = std.transform(df[['Fare']])
 df[['Fare','Fare_standard']].head()
 
 # %% 
+# =================================================
 # 正規化
+# =================================================
+
 value_min = df['Fare'].min()
 value_max = df['Fare'].max()
 print('min:', value_min, 'max:' , value_max)
@@ -183,7 +206,7 @@ df[['Fare','Fare_normalize']].head()
 
 
 
-
+# =================================================
 #  カテゴリ変数をcategory型に
 # =================================================
 def data_pre01(df):
@@ -191,11 +214,14 @@ def data_pre01(df):
 		if df[col].dtype == 'O':
 			df[col] = df[col].astype('category')
 	print('カテゴリ変数をcategory型に変換しました')
+	df.info()
 	return df
 
 
 
-# %% 特徴量生成
+# %% 
+# =================================================
+# 特徴量生成
 # =================================================
 
 # 対数変換 桁が大きい時
@@ -219,6 +245,8 @@ df[['Age','Age_na']].head(7)
 
 
 #%% 単変数、カテゴリ変数
+# =================================================
+
 #ワンホットエンコーダー
 ohe_embarled = OneHotEncoder(sparse_output = False) #sparseではエラーになった
 ohe_embarled.fit(df[['Embarked']])
@@ -255,10 +283,14 @@ df.loc[df['Embarked'].isna(), ['Embarked', 'Embarked_na']]
 
 
 # %% 2変数 数値×数値
+# =================================================
+
 df['Sibsp_+_Parch'] = df['SibSp'] + df['Parch']
 df[['SibSp','Parch','Sibsp_+_Parch']].head()
 
 # %% 2変数 数値×カテゴリ変数
+# =================================================
+
 df_agg = df.groupby('Sex')['Fare'].agg(['mean']).reset_index()
 df_agg.columns = ['Sex', 'mean_Fare_by_Sex']
 print('集約テーブル')
@@ -275,6 +307,8 @@ df[['Sex', 'Fare', 'mean_Fare_by_Sex']].head()
 
 
 # %% 2変数 カテゴリ変数×カテゴリ変数
+# =================================================
+
 df_tbl = pd.crosstab(df['Sex'], df['Embarked'])
 print('集約テーブル（クロス集計)')
 display(df_tbl)
@@ -297,6 +331,8 @@ df[['Sex', 'Embarked', 'count_Sex_x_Embarked']].head()
 df_sam = df.groupby(['Sex','Embarked'])['PassengerId'].count()
 df_sam
 # %% 2カテ 出現割合
+# =================================================
+
 df_tbl = pd.crosstab(df['Sex'], df['Embarked'], normalize='index')
 display(df_tbl)
 
@@ -315,8 +351,12 @@ df[['Sex', 'Embarked', 'Sex=male_&_Embarked=S']].head()
 
 
 
-# %%時系列データ
-#ラグ特徴量
+# %%
+# =================================================
+# 時系列データ
+# =================================================
+
+#ラグ特徴量(一個ずれる)
 df1 = pd.DataFrame({"date":pd.date_range("2021-01-01","2021-01-10"),
                     "weather":["晴れ","晴れ","雨","くもり","くもり","晴れ","雨","晴れ","晴れ","晴れ"],
                     })
@@ -385,7 +425,11 @@ df6['date'] = pd.to_datetime(df6['date'], format='%Y-%m-%d')
 df6['money_cumsum'] = df6.groupby('id')['money'].cumsum()
 df6
 
-# %% テキストデータ
+# %% 
+# =================================================
+# テキストデータ
+# =================================================
+
 from sklearn.feature_extraction.text import CountVectorizer
 vec =CountVectorizer(min_df=20)
 

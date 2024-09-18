@@ -1,7 +1,7 @@
 #%%
 #ライブラリ読み込み
 # =================================================
-import datetime
+import datetime as dt
 import gc
 import re
 import os
@@ -19,7 +19,7 @@ import seaborn as sns
 import japanize_matplotlib
 sns.set(font="IPAexGothic")
 #!%matplotlib inline
-import ydata_profiling as pdp
+# import ydata_profiling as pdp
 
 
 #sckit-learn
@@ -103,7 +103,7 @@ params = {
 
 # 今の日時
 def dt_now():
-    dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+    dt_now = dt.datetime.now()
     return dt_now
 
 
@@ -129,13 +129,6 @@ def train_lgb(
     cv = list(StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=123).split(input_x, input_y))
 
 
-    #output配下に現在のファイル名のフォルダを作成し、移動
-    os.chdir('/tmp/work/src/output')
-    if not os.path.isdir(file_name):
-        os.makedirs(file_name)
-        print(f'{file_name}フォルダ作成しました')
-    os.chdir('/tmp/work/src/output/'+file_name)
-    print(f'保存場所: {os.getcwd()}')
     
     #1.学習データと検証データに分離
     for nfold in list_nfold:
